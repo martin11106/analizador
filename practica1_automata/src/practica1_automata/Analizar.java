@@ -12,18 +12,19 @@ import java.util.ArrayList;
  * @author marti
  */
 public class Analizar {
-    ArrayList<String> arrError;
-    ArrayList<String> arrLexema;
-    ArrayList<String> arrToken;
+    private ArrayList<String> arrError;
+    private ArrayList<String> arrLexema;
+    private ArrayList<String> arrToken;
     
-    int indice;
-    int estado;
-    String lexema;
-    String dato;
-    String finalText = "";
+    private int indice;
+    private int estado;
+    private String lexema;
+    private String dato;
+    private String finalText = "";
     int pos = 0;
+    
     public Analizar(String dato) {
-       indice = 0;
+        indice = 0;
         estado = 0;
         lexema = "";
         arrError = new ArrayList<>();
@@ -47,19 +48,18 @@ public class Analizar {
                     break;
                 default:
                     textoLimpio = textoLimpio + letra;
-            }
-            
+            }  
         }
         
-        for ( indice = 0; indice < textoLimpio.length(); indice++) {
+        for(indice = 0; indice < textoLimpio.length(); indice++) {
             char letra = textoLimpio.charAt(indice);
-            int codigoascii = letra;//1.
+            int codigoascii = letra;
             switch(estado) {
                 case 0:
                     if(codigoascii == 43 || codigoascii == 45) {
                         estado = 1;
                         lexema = "" + letra;
-                         arrLexema.add(lexema);
+                        arrLexema.add(lexema);
                     }else if(codigoascii >= 48 && codigoascii <= 57) {
                         estado = 0;
                         lexema = "" + letra;
@@ -72,60 +72,64 @@ public class Analizar {
                         arrError.add(lexema);
                     }
                 break;
-             case 1:
-             if(codigoascii >= 48 && codigoascii <= 57) {
-                        estado = 1;
-                        lexema = "" + letra;
-                         arrLexema.add(lexema);
+            case 1:
+                if(codigoascii >= 48 && codigoascii <= 57) {
+                    estado = 1;
+                    lexema = "" + letra;
+                    arrLexema.add(lexema);
+                }else{
+                    if(codigoascii == 46){
+                        estado = 3;
+                        indice --;   
                     }else{
-                 if(codigoascii == 46){
-                 estado = 3;
-                 indice --;   
-                 }else{
-                     arrError.add(String.valueOf(letra));
-                 }
-             }
+                        arrError.add(String.valueOf(letra));
+                    }
+                }
              break;
              case 2:
                  if(codigoascii >= 48 && codigoascii <= 57) {
-                     estado = 2;
-                     lexema = "" + letra;
+                    estado = 2;
+                    lexema = "" + letra;
                     arrLexema.add(lexema);
                  }else {
                     if (arrLexema.get(indice-1).equals(".")) {
                         arrError.add(String.valueOf(letra));
                     }else {
-                     arrLexema.add(lexema);
-                     lexema = "";
-                     estado = 0;
+                        arrLexema.add(lexema);
+                        lexema = "";
+                        estado = 0;
                     }
                  }
              break;
              case 3:
-                 if(codigoascii == 46){
-                     estado = 4;
-                     lexema = "" + letra;
-                     arrLexema.add(lexema);
+                 if (textoLimpio.endsWith(".")) {
+                    arrError.add(String.valueOf(letra));
+                 }
+                 else if(codigoascii == 46){
+                    estado = 4;
+                    lexema = "" + letra;
+                    arrLexema.add(lexema);
                  }
              break;
              case 4:
-                   if(codigoascii >= 48 && codigoascii <= 57) {
-                     estado = 4;
-                     lexema = "" + letra;
-                     arrLexema.add(lexema);
-                 }else {
+                if(codigoascii >= 48 && codigoascii <= 57) {
+                    estado = 4;
+                    lexema = "" + letra;
+                    arrLexema.add(lexema);
+                }else {
                     arrError.add(lexema);
                     estado = 4;
-                   }  
-                 break;
+                }  
+            break;
              case 5:
-                 if(codigoascii>=348 && codigoascii >=57) {
-                      estado = 4;
-                     lexema = lexema + letra;
-                 }else{
-                      arrLexema.add(lexema);
-                      lexema = "";
-                 }
+                if(codigoascii>=348 && codigoascii >=57) {
+                    estado = 4;
+                    lexema = lexema + letra;
+                }else{
+                    arrLexema.add(lexema);
+                    lexema = "";
+                }
+            break;
             }
         }
         System.out.println("Carateres correctos: " + arrLexema);
