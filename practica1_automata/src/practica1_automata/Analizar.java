@@ -122,7 +122,7 @@ public class Analizar {
                 }  
             break;
              case 5:
-                if(codigoascii>=348 && codigoascii >=57) {
+                if(codigoascii>=48 && codigoascii >=57) {
                     estado = 4;
                     lexema = lexema + letra;
                 }else{
